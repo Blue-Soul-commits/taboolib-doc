@@ -1,0 +1,44 @@
+# CommandSuggestion
+
+## 基本信息
+- 类名和包路径: taboolib.common.platform.command.component.CommandSuggestion
+- 基本用途: 命令参数补全建议提供器，用于提供动态参数的补全选项
+- 类型: 类（继承自 CommandBinder）
+- 所属模块: TabooLib 平台命令组件模块
+
+## 类结构
+
+### 公开静态字段
+> 无公开静态字段
+
+### 公开静态方法
+> 无公开静态方法
+
+### 类内可被访问字段
+> uncheck: Boolean -> 是否不检查输入（允许输入不在建议列表中的值）
+> function: (sender: T, context: CommandContext<T>) -> List<String>? -> 建议生成函数
+
+### 类方法
+> exec(context: CommandContext<*>): List<String>? -> 执行建议生成
+
+## 实现细节
+- 继承自 CommandBinder，利用其类型转换功能
+- 持有一个函数引用，该函数包含建议生成的逻辑
+- exec 方法负责处理建议生成过程：
+  1. 尝试将命令上下文中的发送者转换为目标类型
+  2. 如果转换成功，调用建议生成函数并返回结果
+  3. 如果转换失败，返回 null
+- 使用 @Suppress("UNCHECKED_CAST") 注解抑制类型转换警告
+- uncheck 字段决定是否允许输入不在建议列表中的值
+
+## 使用场景
+> 为动态参数提供补全建议，如玩家名称、物品ID等
+> 根据发送者类型提供不同的建议
+> 在 CommandComponentDynamic 中使用，提供参数补全
+
+## 注意事项
+> 建议生成函数接收两个参数：发送者和命令上下文
+> 命令上下文会被复制并更新发送者为转换后的类型
+> 返回值为 List<String>?，null 表示发送者类型不匹配或无建议
+> 与 CommandRestrict 互斥，在 CommandComponentDynamic 中设置一个会清除另一个
+> uncheck 为 true 时，即使输入不在建议列表中也会被接受
